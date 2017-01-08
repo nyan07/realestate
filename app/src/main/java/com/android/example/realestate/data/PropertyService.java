@@ -139,7 +139,7 @@ public class PropertyService
                     }
 
                     if (propertyJson.has(CONDO_FEE))
-                        property.condoFee = propertyJson.getString(CONDO_FEE);
+                        property.condoFee = propertyJson.getDouble(CONDO_FEE);
 
                     if (propertyJson.has(CONDO_FEATURES))
                     {

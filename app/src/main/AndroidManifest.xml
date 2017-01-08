@@ -19,5 +19,13 @@
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
+    <activity
+        android:name=".property.details.PropertyDetailActivity"
+        android:parentActivityName=".property.list.PropertyListActivity"
+        android:theme="@style/AppTheme.NoActionBar">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.android.example.realestate.property.list.PropertyListActivity"/>
+    </activity>
 </application>
 </manifest>

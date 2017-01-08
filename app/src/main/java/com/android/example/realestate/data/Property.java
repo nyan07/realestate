@@ -12,7 +12,7 @@ public class Property
     public String subType;
     public String thumbnail;
     public String offerType;
-    public Double price;
+    public double price;
     public int bedrooms;
     public int suites;
     public int garageSpaces;
@@ -23,7 +23,7 @@ public class Property
 
     public String notes;
     public String extraInfo;
-    public String condoFee;
+    public double condoFee;
     public List<String> generalFeatures;
     public List<String> condoFeatures;
     public List<String> pictures;

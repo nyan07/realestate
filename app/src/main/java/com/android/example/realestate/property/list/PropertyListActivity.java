@@ -1,5 +1,6 @@
 package com.android.example.realestate.property.list;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,6 +10,8 @@ import android.view.View;
 
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
+import com.android.example.realestate.property.details.PropertyDetailActivity;
+import com.android.example.realestate.property.details.PropertyDetailFragment;
 import com.android.example.realestate.ui.GridSpacingItemDecoration;
 import com.android.example.realestate.R;
 
@@ -79,5 +82,21 @@ public class PropertyListActivity extends AppCompatActivity
 
     public void onClick(Property property)
     {
+        if (mTwoPane)
+        {
+            Bundle arguments = new Bundle();
+            arguments.putString(PropertyDetailFragment.ARG_ITEM_ID, String.valueOf(property.id));
+            PropertyDetailFragment fragment = new PropertyDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.property_detail_container, fragment)
+                    .commit();
+        }
+        else
+        {
+            Intent intent = new Intent(this, PropertyDetailActivity.class);
+            intent.putExtra(PropertyDetailFragment.ARG_ITEM_ID, String.valueOf(property.id));
+            startActivity(intent);
+        }
     }
 }

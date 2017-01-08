@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Imóveis</string>
+
+    <plurals name="bedrooms">
+        <item quantity="one">%d Dormitório</item>
+        <item quantity="other">%d Dormitórios</item>
+    </plurals>
+
+    <plurals name="suites">
+        <item quantity="one">%d Suíte</item>
+        <item quantity="other">%d Suites</item>
+    </plurals>
+
+    <plurals name="garage_spaces">
+        <item quantity="one">%d Vaga de garagem</item>
+        <item quantity="other">%d Vagas de garagem</item>
+    </plurals>
+
+    <string name="building_area">%.2f m² de área construida</string>
+    <string name="total_area">%.2f m² de área total</string>
+    <string name="on_request">Sob consulta</string>
 </resources>
