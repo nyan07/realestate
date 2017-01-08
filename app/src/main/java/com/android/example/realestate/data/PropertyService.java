@@ -65,9 +65,9 @@ public class PropertyService
         }
     }
 
-    public Property getProperty(String id)
+    public Property getProperty(int id)
     {
-        Property property = itemMap.get(id);
+        Property property = itemMap.get(String.valueOf(id));
 
         if (!property.isLoaded)
         {
@@ -76,7 +76,6 @@ public class PropertyService
 
         return property;
     }
-
 
     private void loadPropertyDetails(final Property property)
     {
@@ -313,6 +312,7 @@ public class PropertyService
     {
         void OnPropertyUpdate(Property property);
     }
+
 
 
 }

@@ -84,10 +84,7 @@ public class PropertyListActivity extends AppCompatActivity
     {
         if (mTwoPane)
         {
-            Bundle arguments = new Bundle();
-            arguments.putString(PropertyDetailFragment.ARG_ITEM_ID, String.valueOf(property.id));
-            PropertyDetailFragment fragment = new PropertyDetailFragment();
-            fragment.setArguments(arguments);
+            PropertyDetailFragment fragment = PropertyDetailFragment.newInstance(property.id);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.property_detail_container, fragment)
                     .commit();
@@ -95,7 +92,7 @@ public class PropertyListActivity extends AppCompatActivity
         else
         {
             Intent intent = new Intent(this, PropertyDetailActivity.class);
-            intent.putExtra(PropertyDetailFragment.ARG_ITEM_ID, String.valueOf(property.id));
+            intent.putExtra(PropertyDetailFragment.ARG_ITEM_ID, property.id);
             startActivity(intent);
         }
     }

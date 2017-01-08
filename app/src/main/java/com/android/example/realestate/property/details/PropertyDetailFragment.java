@@ -5,11 +5,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.BulletSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,55 +14,16 @@ import android.widget.TextView;
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
+import com.android.example.realestate.property.contact.ContactDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 public class PropertyDetailFragment extends Fragment implements PropertyService.OnPropertyUpdateListener
 {
     public static final String ARG_ITEM_ID = "item_id";
     private Property mItem;
-
-    public PropertyDetailFragment()
-    {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID))
-        {
-            String id = getArguments().getString(ARG_ITEM_ID);
-            PropertyService.getInstance().setOnPropertyUpdateListener(this);
-            mItem = PropertyService.getInstance().getProperty(id);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.collapsing_toolbar);
-            if (appBarLayout != null)
-            {
-                appBarLayout.setTitle(mItem.subType);
-                appBarLayout.setTitleEnabled(false);
-
-                ImageView imageView = (ImageView) appBarLayout.findViewById(R.id.picture);
-                Picasso.with(getContext()).load(mItem.thumbnail).into(imageView);
-
-//                TextView headerTitle = (TextView) appBarLayout.findViewById(R.id.header_title);
-//                headerTitle.setText(mItem.subType);
-//
-//                if (mItem.address != null)
-//                {
-//                    TextView headerAddress = (TextView) appBarLayout.findViewById(R.id.header_subtitle);
-//                    headerAddress.setText(mItem.address.getFullAddress());
-//                }
-            }
-
-            //Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
-        }
-    }
 
     private TextView title;
     private TextView subtitle;
@@ -91,6 +47,42 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
 
     private TextView updatedAt;
 
+    public PropertyDetailFragment()
+    {
+    }
+
+    public static PropertyDetailFragment newInstance(int propertyId)
+    {
+        PropertyDetailFragment fragment = new PropertyDetailFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_ITEM_ID, propertyId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments().containsKey(ARG_ITEM_ID))
+        {
+            int id = getArguments().getInt(ARG_ITEM_ID);
+            PropertyService.getInstance().setOnPropertyUpdateListener(this);
+            mItem = PropertyService.getInstance().getProperty(id);
+
+            Activity activity = this.getActivity();
+            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.collapsing_toolbar);
+            if (appBarLayout != null)
+            {
+                appBarLayout.setTitle(mItem.subType);
+                appBarLayout.setTitleEnabled(false);
+
+                ImageView imageView = (ImageView) appBarLayout.findViewById(R.id.picture);
+                Picasso.with(getContext()).load(mItem.thumbnail).into(imageView);
+            }
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,16 +117,20 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         return rootView;
     }
 
+
     public void OnPropertyUpdate(final Property property)
     {
-        getActivity().runOnUiThread(new Runnable()
+        if (getActivity() != null)
         {
-            @Override
-            public void run()
+            getActivity().runOnUiThread(new Runnable()
             {
-                bindView();
-            }
-        });
+                @Override
+                public void run()
+                {
+                    bindView();
+                }
+            });
+        }
     }
 
 
@@ -163,8 +159,6 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         rootView.addView(view);
         return view;
     }
-
-
 
 
     private void bindView()

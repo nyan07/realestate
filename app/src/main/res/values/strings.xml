@@ -19,4 +19,14 @@
     <string name="building_area">%.2f m² de área construida</string>
     <string name="total_area">%.2f m² de área total</string>
     <string name="on_request">Sob consulta</string>
+
+    <!-- CONTACT STRINGS -->
+    <string name="contact_title">Demonstrar interesse</string>
+    <string name="contact_descriptiion">Envie seus dados para demonstrar interesse neste imóvel e em breve entraremos em contato com você.</string>
+    <string name="name">Nome</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Telefone</string>
+    <string name="send">Enviar dados</string>
+    <string name="contact_error">Ocorreu um erro ao tentar enviar os seus dados.</string>
+    <string name="contact_success">Dados enviados com sucesso.\n Aguarde, em breve entraremos em contado.</string>
 </resources>
