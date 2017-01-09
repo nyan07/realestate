@@ -14,10 +14,11 @@ import android.widget.TextView;
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
-import com.android.example.realestate.property.contact.ContactDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class PropertyDetailFragment extends Fragment implements PropertyService.OnPropertyUpdateListener
@@ -45,7 +46,7 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
     private ViewGroup extraInfoContainer;
     private TextView extraInfo;
 
-    private TextView updatedAt;
+    private TextView updatedOn;
 
     public PropertyDetailFragment()
     {
@@ -110,7 +111,7 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         extraInfoContainer = (ViewGroup) rootView.findViewById(R.id.extra_info_container);
         extraInfo = (TextView) rootView.findViewById(R.id.extra_info);
 
-        updatedAt = (TextView) rootView.findViewById(R.id.updated_at);
+        updatedOn = (TextView) rootView.findViewById(R.id.updated_on);
 
         bindView();
 
@@ -278,6 +279,12 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
                 extraInfoContainer.setVisibility(View.GONE);
             }
 
+            if (mItem.updatedOn > 0)
+            {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM HH:mm", Locale.getDefault());
+                updatedOn.setText(getResources().getString(R.string.updated_on,
+                        dateFormat.format(mItem.updatedOn)));
+            }
         }
     }
 }

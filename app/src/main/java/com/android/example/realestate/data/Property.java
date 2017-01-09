@@ -18,7 +18,7 @@ public class Property
     public int garageSpaces;
     public double buindingArea;
     public double landSize;
-    public Date updatedAt;
+    public long updatedOn;
     public Address address;
 
     public String notes;

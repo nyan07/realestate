@@ -3,6 +3,7 @@ package com.android.example.realestate.data;
 import android.util.Log;
 
 import com.android.example.realestate.Config;
+import com.android.example.realestate.utils.DateUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -251,8 +252,8 @@ public class PropertyService
                         property.buindingArea = propertyJson.getInt(BUILDING_AREA);
                         property.landSize = propertyJson.getInt(LAND_SIZE);
 
-                        // TODO data conversion
-                        // property.updatedOn = item.getString(UPDATED_ON);
+                        property.updatedOn = DateUtil.parseMsTimestampToMilliseconds(
+                                propertyJson.getString(UPDATED_ON));
 
                         JSONObject addressJson = propertyJson.getJSONObject(ADDRESS);
                         Address address = new Address();

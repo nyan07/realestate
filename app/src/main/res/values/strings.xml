@@ -16,9 +16,11 @@
         <item quantity="other">%d Vagas de garagem</item>
     </plurals>
 
+    <!-- DETAILS STRINGS -->
     <string name="building_area">%.2f m² de área construida</string>
     <string name="total_area">%.2f m² de área total</string>
     <string name="on_request">Sob consulta</string>
+    <string name="updated_on">Atualizado em %s.</string>
 
     <!-- CONTACT STRINGS -->
     <string name="contact_title">Demonstrar interesse</string>
