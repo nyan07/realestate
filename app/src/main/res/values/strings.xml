@@ -16,6 +16,9 @@
         <item quantity="other">%d Vagas de garagem</item>
     </plurals>
 
+    <string name="empty_list_title">Ops!</string>
+    <string name="empty_list">Não há nada para exibir.</string>
+
     <!-- DETAILS STRINGS -->
     <string name="building_area">%.2f m² de área construida</string>
     <string name="total_area">%.2f m² de área total</string>

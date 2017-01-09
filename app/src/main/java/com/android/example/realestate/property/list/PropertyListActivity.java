@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.example.realestate.data.Property;
@@ -22,6 +23,8 @@ public class PropertyListActivity extends AppCompatActivity
     private boolean mTwoPane;
     private RecyclerView mRecyclerView;
     private PropertyAdapter mAdapter;
+    private View mEmptyView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +39,8 @@ public class PropertyListActivity extends AppCompatActivity
         View recyclerView = findViewById(R.id.character_list);
         assert recyclerView != null;
         mRecyclerView = (RecyclerView) recyclerView;
+        mEmptyView = findViewById(R.id.empty_list);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         if (findViewById(R.id.character_detail_container) != null)
         {
@@ -47,6 +52,7 @@ public class PropertyListActivity extends AppCompatActivity
         PropertyService.getInstance().setOnChangeDataSetListener(this);
         PropertyService.getInstance().loadAll();
     }
+
 
     private void setupRecyclerView()
     {
@@ -71,12 +77,23 @@ public class PropertyListActivity extends AppCompatActivity
     @Override
     public void onDataSetChanged()
     {
+        mProgressBar.setVisibility(View.GONE);
+
+        if (PropertyService.getInstance().getProperties().size() > 0)
+        {
+            mEmptyView.setVisibility(View.GONE);
+        }
         mAdapter.notifyDataSetChanged();
+
+
     }
 
     @Override
     public void onFailure(String message)
     {
+        mProgressBar.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+
         Toast.makeText(this, "Não foi possível carregar os imóveis.", Toast.LENGTH_LONG).show();
     }
 
