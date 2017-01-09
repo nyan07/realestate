@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".property.details.PropertyDetailActivity"
+            android:name=".property.details.PropertyDetailsActivity"
             android:parentActivityName=".property.list.PropertyListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

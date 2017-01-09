@@ -16,10 +16,8 @@ import android.widget.Toast;
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.PropertyService;
 
-import org.w3c.dom.Text;
-
 public class ContactDialogFragment extends BottomSheetDialogFragment implements
-        PropertyService.OnSendUserInfoListener
+        PropertyService.OnSendUserDataListener
 {
     public static final String ARG_ITEM_ID = "item_id";
     private int propertyId;
@@ -95,30 +93,16 @@ public class ContactDialogFragment extends BottomSheetDialogFragment implements
         return view;
     }
 
-    public void OnSuccess()
+    public void onUserDataSent()
     {
-        getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Toast.makeText(getContext(), R.string.contact_success, Toast.LENGTH_SHORT).show();
-                dismiss();
-            }
-        });
+        Toast.makeText(getContext(), R.string.contact_success, Toast.LENGTH_SHORT).show();
+        dismiss();
     }
 
-    public void OnError(String message)
+    public void onFailure(String message)
     {
-        getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Toast.makeText(getContext(), R.string.contact_error, Toast.LENGTH_SHORT).show();
-                dismiss();
-            }
-        });
+        Toast.makeText(getContext(), R.string.contact_error, Toast.LENGTH_SHORT).show();
+        dismiss();
     }
 
     @Override
@@ -126,14 +110,14 @@ public class ContactDialogFragment extends BottomSheetDialogFragment implements
     {
         super.onStart();
         mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        PropertyService.getInstance().setOnSendUserInfoListener(this);
+        PropertyService.getInstance().setOnSendUserDataListener(this);
     }
 
     @Override
     public void onStop()
     {
         super.onStop();
-        PropertyService.getInstance().setOnSendUserInfoListener(null);
+        PropertyService.getInstance().setOnSendUserDataListener(null);
     }
 
     @Override

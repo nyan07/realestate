@@ -1,6 +1,7 @@
 package com.android.example.realestate.data;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.android.example.realestate.BuildConfig;
 import com.android.example.realestate.utils.DateUtil;
@@ -29,11 +30,13 @@ public class PropertyService
     private static PropertyService INSTANCE;
     private final List<Property> items = new ArrayList<>();
     private final Map<String, Property> itemMap = new HashMap<String, Property>();
-    private OnDataSetChangedListener dataSetChangedListener;
-    private OnPropertyUpdateListener propertyUpdateListener;
-    private OnSendUserInfoListener sendUserInfoListener;
+
+    private OnChangeDataSetListener loadPropertiesListener;
+    private OnUpdatePropertyDetailsListener loadPropertyDetailsListener;
+    private OnSendUserDataListener sendUserInfoListener;
 
     private OkHttpClient client = new OkHttpClient();
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private PropertyService()
     {
@@ -49,17 +52,17 @@ public class PropertyService
         return INSTANCE;
     }
 
-    public void setOnDataSetChangedListener(OnDataSetChangedListener listener)
+    public void setOnChangeDataSetListener(OnChangeDataSetListener listener)
     {
-        dataSetChangedListener = listener;
+        loadPropertiesListener = listener;
     }
 
-    public void setOnPropertyUpdateListener(OnPropertyUpdateListener listener)
+    public void setOnUpdatePropertyDetailsListener(OnUpdatePropertyDetailsListener listener)
     {
-        propertyUpdateListener = listener;
+        loadPropertyDetailsListener = listener;
     }
 
-    public void setOnSendUserInfoListener(OnSendUserInfoListener listener)
+    public void setOnSendUserDataListener(OnSendUserDataListener listener)
     {
         sendUserInfoListener = listener;
     }
@@ -100,7 +103,7 @@ public class PropertyService
             @Override
             public void onFailure(Call call, IOException e)
             {
-                e.printStackTrace();
+                callErrorListener(loadPropertyDetailsListener, e.getMessage());
             }
 
             @Override
@@ -177,14 +180,11 @@ public class PropertyService
                     }
 
                     property.isLoaded = true;
-                    if (propertyUpdateListener != null)
-                    {
-                        propertyUpdateListener.OnPropertyUpdate(property);
-                    }
+                    callLoadPropertyDetailsSuccessListener(property);
                 }
                 catch (JSONException e)
                 {
-                    Log.e("json", e.toString());
+                    callErrorListener(loadPropertyDetailsListener, e.getMessage());
                 }
             }
         });
@@ -202,7 +202,7 @@ public class PropertyService
             @Override
             public void onFailure(Call call, IOException e)
             {
-                e.printStackTrace();
+                callErrorListener(loadPropertiesListener, e.getMessage());
             }
 
             @Override
@@ -294,24 +294,15 @@ public class PropertyService
                         addItem(property);
                     }
 
-                    if (dataSetChangedListener != null)
-                    {
-                        dataSetChangedListener.OnDataSetChanged();
-                    }
+                    callLoadPropertiesSuccessListener();
                 }
                 catch (JSONException e)
                 {
-                    Log.e("json", e.toString());
+                    callErrorListener(loadPropertiesListener, e.getMessage());
                 }
             }
         });
     }
-
-    public List<Property> getProperties()
-    {
-        return items;
-    }
-
 
     public void sendUserInfo(int propertyId, String name, String email, String phone)
     {
@@ -333,44 +324,121 @@ public class PropertyService
 
         client.newCall(request).enqueue(new Callback()
         {
-
             @Override
-            public void onFailure(Call call, IOException e)
+            public void onFailure(Call call, final IOException e)
             {
-                e.printStackTrace();
+                callErrorListener(sendUserInfoListener, e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException
             {
-                if (sendUserInfoListener != null)
+                if (response.isSuccessful())
                 {
-                    if (response.isSuccessful())
-                    {
-                        sendUserInfoListener.OnSuccess();
-                    }
-                    else
-                    {
-                        sendUserInfoListener.OnError(response.body().string());
-                    }
+                    callSendUserInfoSuccessListener();
+                }
+                else
+                {
+                   callErrorListener(sendUserInfoListener, response.body().toString());
                 }
             }
         });
     }
 
-    public interface OnDataSetChangedListener
+    public List<Property> getProperties()
     {
-        void OnDataSetChanged();
+        return items;
     }
 
-    public interface OnPropertyUpdateListener
+    private void callErrorListener(final OnFailureListener listener, final String errorMessage)
     {
-        void OnPropertyUpdate(Property property);
+        if (listener != null)
+        {
+            Runnable runable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    listener.onFailure(errorMessage);
+                }
+            };
+
+            mainHandler.post(runable);
+        }
     }
 
-    public interface OnSendUserInfoListener
+    private void callLoadPropertiesSuccessListener()
     {
-        void OnSuccess();
-        void OnError(String message);
+        if (loadPropertiesListener != null)
+        {
+            Runnable runable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    loadPropertiesListener.onDataSetChanged();
+                }
+            };
+
+            mainHandler.post(runable);
+        }
+    }
+
+    private void callLoadPropertyDetailsSuccessListener(final Property property)
+    {
+        if (loadPropertyDetailsListener != null)
+        {
+            Runnable runable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    loadPropertyDetailsListener.onPropertyDetailsUpdated(property);
+                }
+            };
+
+            mainHandler.post(runable);
+        }
+    }
+
+    private void callSendUserInfoSuccessListener()
+    {
+        if (sendUserInfoListener != null)
+        {
+            Runnable runable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    sendUserInfoListener.onUserDataSent();
+                }
+            };
+
+            mainHandler.post(runable);
+        }
+    }
+
+
+    private interface OnFailureListener
+    {
+        void onFailure(String message);
+    }
+
+    public interface OnChangeDataSetListener
+            extends OnFailureListener
+    {
+        void onDataSetChanged();
+    }
+
+    public interface OnUpdatePropertyDetailsListener
+            extends OnFailureListener
+    {
+        void onPropertyDetailsUpdated(Property property);
+    }
+
+    public interface OnSendUserDataListener
+            extends OnFailureListener
+    {
+        void onUserDataSent();
     }
 }

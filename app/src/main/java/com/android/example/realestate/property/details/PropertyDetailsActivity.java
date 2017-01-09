@@ -2,7 +2,6 @@ package com.android.example.realestate.property.details;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -15,7 +14,7 @@ import com.android.example.realestate.R;
 import com.android.example.realestate.property.contact.ContactDialogFragment;
 import com.android.example.realestate.property.list.PropertyListActivity;
 
-public class PropertyDetailActivity extends AppCompatActivity
+public class PropertyDetailsActivity extends AppCompatActivity
 {
     private int id;
 
@@ -35,11 +34,11 @@ public class PropertyDetailActivity extends AppCompatActivity
 
         if (savedInstanceState == null)
         {
-            id = getIntent().getIntExtra(PropertyDetailFragment.ARG_ITEM_ID, 0);
+            id = getIntent().getIntExtra(PropertyDetailsFragment.ARG_ITEM_ID, 0);
 
             if (id > 0)
             {
-                PropertyDetailFragment fragment = PropertyDetailFragment.newInstance(id);
+                PropertyDetailsFragment fragment = PropertyDetailsFragment.newInstance(id);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.character_detail_container, fragment)
                         .commit();

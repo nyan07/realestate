@@ -7,16 +7,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
-import com.android.example.realestate.property.details.PropertyDetailActivity;
-import com.android.example.realestate.property.details.PropertyDetailFragment;
+import com.android.example.realestate.property.details.PropertyDetailsActivity;
+import com.android.example.realestate.property.details.PropertyDetailsFragment;
 import com.android.example.realestate.ui.GridSpacingItemDecoration;
 import com.android.example.realestate.R;
 
 public class PropertyListActivity extends AppCompatActivity
-        implements PropertyAdapter.OnPropertyClickListener, PropertyService.OnDataSetChangedListener
+        implements PropertyAdapter.OnPropertyClickListener, PropertyService.OnChangeDataSetListener
 {
     private boolean mTwoPane;
     private RecyclerView mRecyclerView;
@@ -43,7 +44,7 @@ public class PropertyListActivity extends AppCompatActivity
 
         setupRecyclerView();
 
-        PropertyService.getInstance().setOnDataSetChangedListener(this);
+        PropertyService.getInstance().setOnChangeDataSetListener(this);
         PropertyService.getInstance().loadAll();
     }
 
@@ -63,36 +64,35 @@ public class PropertyListActivity extends AppCompatActivity
     @Override
     protected void onDestroy()
     {
-        PropertyService.getInstance().setOnDataSetChangedListener(this);
+        PropertyService.getInstance().setOnChangeDataSetListener(null);
         super.onDestroy();
     }
 
     @Override
-    public void OnDataSetChanged()
+    public void onDataSetChanged()
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure(String message)
+    {
+        Toast.makeText(this, "Não foi possível carregar os imóveis.", Toast.LENGTH_LONG).show();
     }
 
     public void onClick(Property property)
     {
         if (mTwoPane)
         {
-            PropertyDetailFragment fragment = PropertyDetailFragment.newInstance(property.id);
+            PropertyDetailsFragment fragment = PropertyDetailsFragment.newInstance(property.id);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.property_detail_container, fragment)
                     .commit();
         }
         else
         {
-            Intent intent = new Intent(this, PropertyDetailActivity.class);
-            intent.putExtra(PropertyDetailFragment.ARG_ITEM_ID, property.id);
+            Intent intent = new Intent(this, PropertyDetailsActivity.class);
+            intent.putExtra(PropertyDetailsFragment.ARG_ITEM_ID, property.id);
             startActivity(intent);
         }
     }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
@@ -19,13 +20,10 @@ import com.android.example.realestate.property.contact.ContactDialogFragment;
 import com.android.example.realestate.utils.FormatterUtil;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Currency;
 import java.util.Locale;
 
-public class PropertyDetailFragment extends Fragment implements PropertyService.OnPropertyUpdateListener
+public class PropertyDetailsFragment extends Fragment implements PropertyService.OnUpdatePropertyDetailsListener
 {
     public static final String ARG_ITEM_ID = "item_id";
     private Property mItem;
@@ -52,13 +50,13 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
 
     private TextView updatedOn;
 
-    public PropertyDetailFragment()
+    public PropertyDetailsFragment()
     {
     }
 
-    public static PropertyDetailFragment newInstance(int propertyId)
+    public static PropertyDetailsFragment newInstance(int propertyId)
     {
-        PropertyDetailFragment fragment = new PropertyDetailFragment();
+        PropertyDetailsFragment fragment = new PropertyDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_ITEM_ID, propertyId);
         fragment.setArguments(args);
@@ -73,7 +71,7 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         if (getArguments().containsKey(ARG_ITEM_ID))
         {
             int id = getArguments().getInt(ARG_ITEM_ID);
-            PropertyService.getInstance().setOnPropertyUpdateListener(this);
+            PropertyService.getInstance().setOnUpdatePropertyDetailsListener(this);
             mItem = PropertyService.getInstance().getProperty(id);
 
             Activity activity = this.getActivity();
@@ -133,22 +131,17 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         return rootView;
     }
 
-
-    public void OnPropertyUpdate(final Property property)
+    public void onPropertyDetailsUpdated(final Property property)
     {
-        if (getActivity() != null)
-        {
-            getActivity().runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    bindView();
-                }
-            });
-        }
+        bindView();
     }
 
+    @Override
+    public void onFailure(String message)
+    {
+        Toast.makeText(getActivity(), "Não foi possível obter detalhes deste imóvel.",
+                Toast.LENGTH_LONG).show();
+    }
 
     private View addPropertyFeature(ViewGroup rootView, String label, String value, int icon)
     {
@@ -175,7 +168,6 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         rootView.addView(view);
         return view;
     }
-
 
     private void bindView()
     {
