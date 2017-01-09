@@ -17,9 +17,11 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class PropertyService
@@ -29,6 +31,7 @@ public class PropertyService
     private final Map<String, Property> itemMap = new HashMap<String, Property>();
     private OnDataSetChangedListener dataSetChangedListener;
     private OnPropertyUpdateListener propertyUpdateListener;
+    private OnSendUserInfoListener sendUserInfoListener;
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -54,6 +57,11 @@ public class PropertyService
     public void setOnPropertyUpdateListener(OnPropertyUpdateListener listener)
     {
         propertyUpdateListener = listener;
+    }
+
+    public void setOnSendUserInfoListener(OnSendUserInfoListener listener)
+    {
+        sendUserInfoListener = listener;
     }
 
     private void addItem(Property property)
@@ -304,6 +312,52 @@ public class PropertyService
         return items;
     }
 
+
+    public void sendUserInfo(int propertyId, String name, String email, String phone)
+    {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(BuildConfig.API_BASE_URL).newBuilder();
+        urlBuilder.addEncodedPathSegment("contato");
+        String url = urlBuilder.build().toString();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("CodImovel", String.valueOf(propertyId))
+                .add("Nome", name)
+                .add("Email", email)
+                .add("Telefone", phone)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback()
+        {
+
+            @Override
+            public void onFailure(Call call, IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException
+            {
+                if (sendUserInfoListener != null)
+                {
+                    if (response.isSuccessful())
+                    {
+                        sendUserInfoListener.OnSuccess();
+                    }
+                    else
+                    {
+                        sendUserInfoListener.OnError(response.body().string());
+                    }
+                }
+            }
+        });
+    }
+
     public interface OnDataSetChangedListener
     {
         void OnDataSetChanged();
@@ -312,5 +366,11 @@ public class PropertyService
     public interface OnPropertyUpdateListener
     {
         void OnPropertyUpdate(Property property);
+    }
+
+    public interface OnSendUserInfoListener
+    {
+        void OnSuccess();
+        void OnError(String message);
     }
 }

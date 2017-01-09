@@ -9,10 +9,17 @@ import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.example.realestate.R;
+import com.android.example.realestate.data.PropertyService;
 
-public class ContactDialogFragment extends BottomSheetDialogFragment
+import org.w3c.dom.Text;
+
+public class ContactDialogFragment extends BottomSheetDialogFragment implements
+        PropertyService.OnSendUserInfoListener
 {
     public static final String ARG_ITEM_ID = "item_id";
     private int propertyId;
@@ -35,6 +42,9 @@ public class ContactDialogFragment extends BottomSheetDialogFragment
             };
 
     private BottomSheetBehavior mBehavior;
+    private TextView name;
+    private TextView email;
+    private TextView phone;
 
     public ContactDialogFragment()
     {
@@ -65,7 +75,50 @@ public class ContactDialogFragment extends BottomSheetDialogFragment
     {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
 
+        name = (TextView) view.findViewById(R.id.name);
+        email = (TextView) view.findViewById(R.id.email);
+        phone = (TextView) view.findViewById(R.id.phone);
+
+        Button button = (Button) view.findViewById(R.id.send_button);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                PropertyService.getInstance().sendUserInfo(propertyId,
+                        name.getText().toString(),
+                        email.getText().toString(),
+                        phone.getText().toString());
+            }
+        });
+
         return view;
+    }
+
+    public void OnSuccess()
+    {
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Toast.makeText(getContext(), R.string.contact_success, Toast.LENGTH_SHORT).show();
+                dismiss();
+            }
+        });
+    }
+
+    public void OnError(String message)
+    {
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Toast.makeText(getContext(), R.string.contact_error, Toast.LENGTH_SHORT).show();
+                dismiss();
+            }
+        });
     }
 
     @Override
@@ -73,6 +126,14 @@ public class ContactDialogFragment extends BottomSheetDialogFragment
     {
         super.onStart();
         mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        PropertyService.getInstance().setOnSendUserInfoListener(this);
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        PropertyService.getInstance().setOnSendUserInfoListener(null);
     }
 
     @Override

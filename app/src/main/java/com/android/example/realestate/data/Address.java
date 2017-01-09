@@ -1,5 +1,7 @@
 package com.android.example.realestate.data;
 
+import com.android.example.realestate.utils.StringUtil;
+
 public class Address
 {
     public String publicSpace;
@@ -15,24 +17,24 @@ public class Address
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        if (publicSpace != null)
+        if (!StringUtil.isNullOrEmpty(publicSpace))
         {
             stringBuilder.append(publicSpace);
 
-            if (number != null)
+            if (!StringUtil.isNullOrWhiteSpace(number))
             {
                 stringBuilder.append(", ");
                 stringBuilder.append(number);
             }
 
-            if (details != null)
+            if (!StringUtil.isNullOrWhiteSpace(details))
             {
                 stringBuilder.append(" ");
                 stringBuilder.append(details);
             }
         }
 
-        if (neighborhood != null)
+        if (!StringUtil.isNullOrWhiteSpace(neighborhood))
         {
             if (stringBuilder.length() > 0)
             {
@@ -42,7 +44,7 @@ public class Address
             stringBuilder.append(neighborhood);
         }
 
-        if (city != null)
+        if (!StringUtil.isNullOrWhiteSpace(city))
         {
             if (stringBuilder.length() > 0)
             {
@@ -52,7 +54,7 @@ public class Address
             stringBuilder.append(city);
         }
 
-        if (state != null)
+        if (!StringUtil.isNullOrWhiteSpace(state))
         {
             if (stringBuilder.length() > 0)
             {
@@ -62,7 +64,7 @@ public class Address
             stringBuilder.append(state);
         }
 
-        if (zipcode != null)
+        if (!StringUtil.isNullOrWhiteSpace(zipcode))
         {
             if (stringBuilder.length() > 0)
             {

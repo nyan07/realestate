@@ -8,12 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
+import com.android.example.realestate.property.contact.ContactDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -112,6 +114,17 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
         extraInfo = (TextView) rootView.findViewById(R.id.extra_info);
 
         updatedOn = (TextView) rootView.findViewById(R.id.updated_on);
+
+        Button button = (Button) rootView.findViewById(R.id.show_form);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ContactDialogFragment fragment = ContactDialogFragment.newInstance(mItem.id);
+                fragment.show(getActivity().getSupportFragmentManager(),fragment.getTag());
+            }
+        });
 
         bindView();
 

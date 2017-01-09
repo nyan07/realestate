@@ -406,6 +406,13 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/show_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_title"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+
 </LinearLayout>
 
 
