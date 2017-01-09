@@ -16,11 +16,13 @@ import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
 import com.android.example.realestate.property.contact.ContactDialogFragment;
+import com.android.example.realestate.utils.FormatterUtil;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Locale;
 
 public class PropertyDetailFragment extends Fragment implements PropertyService.OnPropertyUpdateListener
@@ -186,8 +188,7 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
 
             if (mItem.price > 0)
             {
-                NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-                price.setText(format.format(mItem.price));
+                price.setText(FormatterUtil.getFormattedCurrencyString("BRL", mItem.price));
             }
             else
             {
@@ -248,9 +249,7 @@ public class PropertyDetailFragment extends Fragment implements PropertyService.
 
             if (mItem.condoFee > 0)
             {
-                NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-                condoFee.setText(format.format(mItem.condoFee));
-
+                condoFee.setText(FormatterUtil.getFormattedCurrencyString("BRL", mItem.condoFee));
                 condoFeeContainer.setVisibility(View.VISIBLE);
             }
             else
