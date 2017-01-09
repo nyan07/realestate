@@ -2,7 +2,7 @@ package com.android.example.realestate.data;
 
 import android.util.Log;
 
-import com.android.example.realestate.Config;
+import com.android.example.realestate.BuildConfig;
 import com.android.example.realestate.utils.DateUtil;
 
 import org.json.JSONArray;
@@ -80,7 +80,7 @@ public class PropertyService
 
     private void loadPropertyDetails(final Property property)
     {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Config.API_URL).newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(BuildConfig.API_BASE_URL).newBuilder();
         urlBuilder
                 .addEncodedPathSegment("imoveis")
                 .addEncodedPathSegment(String.valueOf(property.id));
@@ -184,7 +184,7 @@ public class PropertyService
 
     public void loadAll()
     {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Config.API_URL).newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(BuildConfig.API_BASE_URL).newBuilder();
         urlBuilder.addEncodedPathSegment("imoveis");
         String url = urlBuilder.build().toString();
 
@@ -313,7 +313,4 @@ public class PropertyService
     {
         void OnPropertyUpdate(Property property);
     }
-
-
-
 }
