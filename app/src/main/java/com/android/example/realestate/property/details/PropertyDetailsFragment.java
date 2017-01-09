@@ -1,10 +1,17 @@
 package com.android.example.realestate.property.details;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +23,7 @@ import android.widget.Toast;
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
 import com.android.example.realestate.data.PropertyService;
-import com.android.example.realestate.property.contact.ContactDialogFragment;
+import com.android.example.realestate.property.contact.ContactActivity;
 import com.android.example.realestate.utils.FormatterUtil;
 import com.squareup.picasso.Picasso;
 
@@ -75,13 +82,42 @@ public class PropertyDetailsFragment extends Fragment implements PropertyService
             mItem = PropertyService.getInstance().getProperty(id);
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.collapsing_toolbar);
-            if (appBarLayout != null)
-            {
-                appBarLayout.setTitle(mItem.subType);
-                appBarLayout.setTitleEnabled(false);
+            CollapsingToolbarLayout collapsingToolbarLayout =
+                    (CollapsingToolbarLayout) activity.findViewById(R.id.collapsing_toolbar);
 
-                ImageView imageView = (ImageView) appBarLayout.findViewById(R.id.picture);
+            AppBarLayout appBarLayout = (AppBarLayout) activity.findViewById(R.id.app_bar);
+            final Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+
+            if (collapsingToolbarLayout != null)
+            {
+                collapsingToolbarLayout.setTitle(mItem.subType);
+                collapsingToolbarLayout.setTitleEnabled(false);
+
+                appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
+                {
+                    boolean isVisible = true;
+                    int scrollRange = -1;
+
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        if (scrollRange == -1)
+                        {
+                            scrollRange = appBarLayout.getTotalScrollRange();
+                        }
+
+                        if (scrollRange + verticalOffset == 0)
+                        {
+                            isVisible = true;
+                            toolbar.setTitle(mItem.subType);
+                        }
+                        else if(isVisible)
+                        {
+                            isVisible = false;
+                            toolbar.setTitle("");
+                        }
+                    }
+                });
+                ImageView imageView = (ImageView) collapsingToolbarLayout.findViewById(R.id.picture);
                 Picasso.with(getContext()).load(mItem.thumbnail).into(imageView);
             }
         }
@@ -121,8 +157,9 @@ public class PropertyDetailsFragment extends Fragment implements PropertyService
             @Override
             public void onClick(View v)
             {
-                ContactDialogFragment fragment = ContactDialogFragment.newInstance(mItem.id);
-                fragment.show(getActivity().getSupportFragmentManager(),fragment.getTag());
+                Intent intent = new Intent(getActivity(), ContactActivity.class);
+                intent.putExtra(ContactActivity.ARG_ITEM_ID, mItem.id);
+                startActivity(intent);
             }
         });
 

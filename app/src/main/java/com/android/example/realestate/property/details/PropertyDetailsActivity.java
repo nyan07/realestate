@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.android.example.realestate.R;
-import com.android.example.realestate.property.contact.ContactDialogFragment;
+import com.android.example.realestate.property.contact.ContactActivity;
 import com.android.example.realestate.property.list.PropertyListActivity;
 
 public class PropertyDetailsActivity extends AppCompatActivity
@@ -53,9 +53,9 @@ public class PropertyDetailsActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v)
                 {
-                    ContactDialogFragment fragment =
-                            ContactDialogFragment.newInstance(id);
-                    fragment.show(getSupportFragmentManager(),fragment.getTag());
+                    Intent intent = new Intent(PropertyDetailsActivity.this, ContactActivity.class);
+                    intent.putExtra(PropertyDetailsFragment.ARG_ITEM_ID, id);
+                    startActivity(intent);
                 }
             });
         }

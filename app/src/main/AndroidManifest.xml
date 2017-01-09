@@ -28,6 +28,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.example.realestate.property.list.PropertyListActivity"/>
         </activity>
+
+        <activity
+            android:name=".property.contact.ContactActivity"
+            android:parentActivityName=".property.list.PropertyListActivity"
+            android:label="@string/contact_title"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
