@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.android.example.realestate.R;
 import com.android.example.realestate.data.Property;
+import com.android.example.realestate.utils.FormatterUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,7 +43,19 @@ class PropertyAdapter
     public void onBindViewHolder(final PropertyViewHolder holder, int position)
     {
         holder.mItem = mValues.get(position);
-        holder.mNameView.setText(mValues.get(position).subType);
+        holder.mTitleView.setText(holder.mItem.subType);
+
+        if (holder.mItem.address != null)
+        {
+            holder.mSubTitleView.setVisibility(View.VISIBLE);
+            holder.mSubTitleView.setText(holder.mItem.address.getFullAddress());
+        }
+        else
+        {
+            holder.mSubTitleView.setVisibility(View.GONE);
+        }
+
+        holder.mPriceView.setText(FormatterUtil.getFormattedCurrencyString("BRL", holder.mItem.price));
 
         Context context = holder.itemView.getContext();
 

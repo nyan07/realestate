@@ -12,7 +12,9 @@ import com.android.example.realestate.R;
 class PropertyViewHolder extends RecyclerView.ViewHolder
 {
     public final View mView;
-    public final TextView mNameView;
+    public final TextView mTitleView;
+    public final TextView mSubTitleView;
+    public final TextView mPriceView;
     public final ImageView mImageView;
     public Property mItem;
 
@@ -20,13 +22,15 @@ class PropertyViewHolder extends RecyclerView.ViewHolder
     {
         super(view);
         mView = view;
-        mNameView = (TextView) view.findViewById(R.id.name);
+        mTitleView = (TextView) view.findViewById(R.id.title);
         mImageView = (ImageView) view.findViewById(R.id.picture);
+        mSubTitleView = (TextView) view.findViewById(R.id.subtitle);
+        mPriceView = (TextView) view.findViewById(R.id.price);
     }
 
     @Override
     public String toString()
     {
-        return super.toString() + " '" + mNameView.getText() + "'";
+        return super.toString() + " '" + mTitleView.getText() + "'";
     }
 }
